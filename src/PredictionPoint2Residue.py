@@ -1,7 +1,8 @@
-import csv
 import os
-import random
+import sys
+import csv
 import json
+import random
 import numpy as np
 from sklearn import neighbors
 from sklearn.neighbors import NearestNeighbors
@@ -10,17 +11,19 @@ from sklearn.metrics import precision_score, recall_score, roc_curve, auc, avera
 
 from getcontactEpipred import getcontactbyabag, getsppider2, getalign
 from scipy.special import expit
-import sys
 
-pdb = sys.argv[1]
+from pathlib import Path
 
-rfile = pdb + '-r.pts'
+dir_path=sys.argv[1]
+pdb = Path(sys.argv[1]).stem[0:4]
+
+rfile = os.path.join(dir_path,pdb + '-r.pts')
 rcoord = np.transpose(np.loadtxt(rfile))[0:3, :]
 
-lfile = pdb + '-l.pts'
+lfile = os.path.join(dir_path,pdb + '-l.pts')
 lcoord = np.transpose(np.loadtxt(lfile))[0:3, :]
 
-profile = pdb + '_prob_r_l.seg'
+profile = os.path.join(dir_path,pdb + '_prob_r_l.seg')
 prolabel = np.loadtxt(profile)
 
 pror = prolabel[0:rcoord.shape[1]]
@@ -34,8 +37,8 @@ dt = 2
 cutoff = 0.5
 tol = [6, 6, 6]
 
-rl, nl, cl = getsppider2(pdb + '-l.pdb')
-rr, nr, cr = getsppider2(pdb + '-r.pdb')
+rl, nl, cl = getsppider2(os.path.join(dir_path,pdb + '-l.pdb'))
+rr, nr, cr = getsppider2(os.path.join(dir_path,pdb + '-r.pdb'))
 
 cencoordr = np.asarray(nr)
 
@@ -51,7 +54,7 @@ for ii, ind in enumerate(indicesr):
             continue
         probr[rr[ii]] = max(probr[rr[ii]], pror[sind])
 
-np.savetxt(pdb + '_resi_r.seg', np.array(probr))
+np.savetxt(os.path.join(dir_path,pdb + '_resi_r.seg'), np.array(probr))
 
 clfl = NearestNeighbors(n_neighbors=nn, algorithm='ball_tree').fit(lcoord)
 distancesl, indicesl = clfl.kneighbors(cencoordl)
@@ -64,4 +67,4 @@ for ii, ind in enumerate(indicesl):
             continue
 
         probl[rl[ii]] = max(probl[rl[ii]], prol[sind])
-np.savetxt(pdb + '_resi_l.seg', np.array(probl))
+np.savetxt(os.path.join(dir_path,pdb + '_resi_l.seg'), np.array(probl))

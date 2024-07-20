@@ -9,7 +9,7 @@ from utils.conversion import pdb_to_wrl,wrl_to_pts
 from utils.features import get_pqr_from_pdb,findvalue,getcontactbyabag
 
 
-def add_EH_to_pts(pdb_id,pdb_path,pts_path,apbs_path,save_dir):
+def add_EH_to_pts(pdb_id,pdb_path,pts_path,apbs_path,save_dir,type):
     newdict, labeldict = getcontactbyabag(pdb_path)
     file=np.loadtxt(pts_path)[:,0:3]
     coord=np.asarray(newdict)
@@ -21,24 +21,30 @@ def add_EH_to_pts(pdb_id,pdb_path,pts_path,apbs_path,save_dir):
     gl, orl, dl, vl = parsefile(apbs)
     av = findvalue(file,gl,orl, dl,vl)
     pred=np.sum(label[indices] * np.expand_dims(dist, 2), 1) / np.expand_dims(np.sum(dist, 1), 1) / 10
-    np.savetxt(os.path.join(save_dir, f'{pdb_id}-l.pts'),
+    np.savetxt(os.path.join(save_dir, f'{pdb_id}-{type}.pts'),
                np.concatenate((file, np.expand_dims(av, 1), np.expand_dims(pred[:, 0], 1)), axis=1))
 
-pdbid = '6P50'
-ab_ch = 'H L'
-ag_ch = 'C'
+pdbid = '5ZUF'
+ab_ch = 'D E'
+ag_ch = 'A B C'
 
-#pdb_dir="/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound"
-#output_folder="/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound"
-#pdb_to_wrl(pdb_dir,output_folder)
-#wrl_to_pts(pdb_dir,output_folder)
-#get_pqr_from_pdb(pdb_dir,output_folder)
-save_folder="/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound"
-pdb_path = "/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound/6P50_l_b.pdb"
-pts_path = "/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound/6P50_l_b.pts"
-apbs_path = "/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound/6P50_l_b.pqr.dx"
+pdb_dir=f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound"
+output_folder=f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound"
+pdb_to_wrl(pdb_dir,output_folder)
+wrl_to_pts(pdb_dir,output_folder)
+get_pqr_from_pdb(pdb_dir,output_folder)
+save_folder=f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound"
+pdb_path = f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound/{pdbid}_l_b.pdb"
+pts_path = f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound/{pdbid}_l_b.pts"
+apbs_path = f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound/{pdbid}_l_b.pqr.dx"
+add_EH_to_pts(pdbid, pdb_path, pts_path, apbs_path,save_folder,"l")
 
-add_EH_to_pts(pdbid, pdb_path, pts_path, apbs_path,save_folder)
+save_folder=f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound"
+pdb_path = f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound/{pdbid}_r_b.pdb"
+pts_path = f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound/{pdbid}_r_b.pts"
+apbs_path = f"/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/{pdbid}_bound/{pdbid}_r_b.pqr.dx"
+add_EH_to_pts(pdbid, pdb_path, pts_path, apbs_path,save_folder,"r")
+
 #newdickl, labeldickl = getcontactbyabag('/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound/6P50_l_b.pdb')
 #lfile = np.loadtxt("/projectnb2/docking/imhaoyu/24_epitope_mapping/database/ABAGtest/6P50_bound/6P50_l_b.pts")[:, 0:3]
 #lcoord = np.asarray(newdickl)
