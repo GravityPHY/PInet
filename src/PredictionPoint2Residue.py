@@ -37,8 +37,8 @@ dt = 2
 cutoff = 0.5
 tol = [6, 6, 6]
 
-rl, nl, cl = getsppider2(os.path.join(dir_path,pdb + '-l.pdb'))
-rr, nr, cr = getsppider2(os.path.join(dir_path,pdb + '-r.pdb'))
+rl, nl, cl = getsppider2(os.path.join(dir_path,pdb + '_l_b.pdb'))
+rr, nr, cr = getsppider2(os.path.join(dir_path,pdb + '_r_b.pdb'))
 
 cencoordr = np.asarray(nr)
 
